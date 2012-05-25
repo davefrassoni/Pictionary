@@ -1,7 +1,5 @@
 $(document).ready(function() {
-	var socket = io.connect('http://192.168.1.115:8080'); //190.177.225.22
-	
-	// Chat system
+	var socket = io.connect('http://localhost:8080/');
 	
 	var status = $("#status");
 	var people = $('#people');
