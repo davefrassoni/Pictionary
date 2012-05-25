@@ -1,0 +1,16 @@
+{
+	"name": "Pictionary",
+	"version": "0.0.1",
+	"description": "Enjoyable Pictionary game working with Node.js and Socket.io",
+	"keywords": ["pictionary", "draw", "drawing", "game", "socket.io", "nodejs", "node.js"],
+	"author": "Dave Frassoni <me@davefrassoni.com> (http://davefrassoni.com/)",
+	"dependencies": {
+		"socket.io": "",
+		"sanitizer": ""
+	},
+	"engine": "node >= 0.4.7",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/davefrassoni/Pictionary.git"
+	}
+}

@@ -1,4 +1,20 @@
-Pictonary
-=========
+# Pictionary #
+current version: 0.0.1
 
-Enjoyable Pictonary game working with Node.js and Socket.io
+## Description ##
+
+### Enjoyable Pictionary game working with Node.js and Socket.io ###
+
+## Setup ##
+
+1. Run:
+
+		node server.js
+
+1. Browse to:
+
+		http://localhost:8080/index.html
+
+1. Modify code as you want
+
+1. Enjoy the Pictionary!
