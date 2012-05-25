@@ -5,6 +5,12 @@ current version: 0.0.1
 
 ### Enjoyable Pictionary game working with Node.js and Socket.io ###
 
+## Installation ##
+
+### Either download from GitHub or run: ###
+
+		npm install Pictionary
+
 ## Setup ##
 
 1. Run:
