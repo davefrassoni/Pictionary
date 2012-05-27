@@ -36,7 +36,7 @@ io.sockets.on('connection', function (socket) {
 		if(sanitizedMsg != msg.text) {
 			console.log('(!) Possible attack detected from ' + socket.id + ' (' + myNick + ') : ' + msg.text);
 		}
-		if(!sanitizedMsg) {
+		if(!sanitizedMsg || sanitizedMsg.length>256) {
 			return;
 		}
 		
@@ -48,7 +48,7 @@ io.sockets.on('connection', function (socket) {
 		if(sanitizedNick != user.nick) {
 			console.log('(!) Possible attack detected from ' + socket.id + ' (' + myNick + ') : ' + user.nick);
 		}
-		if(!sanitizedNick) {
+		if(!sanitizedNick || myNick == sanitizedNick || sanitizedNick.length>32 ) {
 			return;
 		}
 		
