@@ -152,7 +152,8 @@ body
 	float:left;
 }
 
-#clearchat
+#clearchat,
+#readytodraw
 {
 	margin-top:10px;
 	padding:5px;
