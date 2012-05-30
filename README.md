@@ -1,5 +1,5 @@
 # Pictionary #
-current version: 0.0.2
+current version: 0.0.3
 
 ## Description ##
 
