@@ -7,9 +7,9 @@ $(document).ready(function() {
 	socket.on('connect', function ()
 	{
 		status.text('status: online');
-		chatInput.removeAttr('disabled');
-		chatNick.removeAttr('disabled');
-		document.getElementById("chatInput").focus();
+		chatinput.removeAttr('disabled');
+		chatnick.removeAttr('disabled');
+		document.getElementById("chatinput").focus();
 	});
 	
 	socket.on('users', function (users)
@@ -25,47 +25,43 @@ $(document).ready(function() {
 	//                                 chat section
 	// ================================================
 	
-	var chatContent = $("#chatContent");
-	var chatInput = $('#chatInput');
-	var chatNick = $('#chatNick');
+	var chatcontent = $("#chatcontent");
+	var chatinput = $('#chatinput');
+	var chatnick = $('#chatnick');
 	var myNick = "guest";
 	
-	chatInput.keydown(function(e)
-	{
+	chatinput.keydown(function(e) {
 		if (e.keyCode === 13) {
 			sendMessage();
 		}
 	});
 	
-	function sendMessage()
-	{
-		var msg = chatInput.val();
+	function sendMessage()	{
+		var msg = chatinput.val();
 		if (!msg) {
 			return;
 		}
 		if(msg == 'cls' | msg == 'clear') {
-			chatContent.text('');
-			chatInput.val('');
+			chatcontent.text('');
+			chatinput.val('');
 			return;
 		}
-		if(myNick != chatNick.val()) {
+		if(myNick != chatnick.val()) {
 			nickChange();
 		}
 		
 		socket.emit('message', { text: msg });
-		chatInput.val('');
+		chatinput.val('');
 	}
 	
-	chatNick.keydown(function(e)
-	{
+	chatnick.keydown(function(e)	{
 		if (e.keyCode === 13) {
 			nickChange();
 		}
 	});
 	
-	function nickChange()
-	{
-		var msg = chatNick.val();
+	function nickChange()	{
+		var msg = chatnick.val();
 		if (!msg || msg == myNick) {
 			return;
 		}
@@ -74,38 +70,33 @@ $(document).ready(function() {
 		myNick = msg;
 	}
 	
-	socket.on('message', function(msg)
-	{
-		chatContent.append('<p><span style="color:' + msg.color + '">' + msg.nick + '</span>: ' + msg.text + '</p>');
+	socket.on('message', function(msg) {
+		chatcontent.append('<p><span style="color:' + msg.color + '">' + msg.nick + '</span>: ' + msg.text + '</p>');
 		
 		chatScrollDown();
 	});
 	
-	socket.on('userJoined', function (user)
-	{
-		chatContent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> joined.</p>');
+	socket.on('userJoined', function (user)	{
+		chatcontent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> joined.</p>');
 		
 		chatScrollDown();
 	});
 	
-	socket.on('userLeft', function (user)
-	{
-		chatContent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> left.</p>');
+	socket.on('userLeft', function (user)	{
+		chatcontent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> left.</p>');
 		
 		chatScrollDown();
 	});
 	
-	socket.on('nickChange', function (user)
-	{
-		chatContent.append('<p><span style="color:' + user.color + '">' + user.oldNick + '</span> changed his nick to <span style="color:' + user.color + '">' + user.newNick + '</span></p>');
+	socket.on('nickChange', function (user) {
+		chatcontent.append('<p><span style="color:' + user.color + '">' + user.oldNick + '</span> changed his nick to <span style="color:' + user.color + '">' + user.newNick + '</span></p>');
 		
 		chatScrollDown();
 	});
 
-	function chatScrollDown()
-	{
-		var objChatContent = document.getElementById("chatContent");
-		objChatContent.scrollTop = objChatContent.scrollHeight;
+	function chatScrollDown() {
+		var objchatcontent = document.getElementById("chatcontent");
+		objchatcontent.scrollTop = objchatcontent.scrollHeight;
 	};
 	
 	// ================================================
@@ -113,22 +104,21 @@ $(document).ready(function() {
 	// ================================================
 	
 	var canvas = document.getElementById('canvas');
-	var blackPencil =  document.getElementById('black');
-	var redPencil =  document.getElementById('red');
-	var greenPencil =  document.getElementById('green');
-	var bluePencil =  document.getElementById('blue');
-	var clearCanvas = document.getElementById('clearCanvas');
-	var clearChat =  document.getElementById('clearChat');
+	var clearcanvas = document.getElementById('clearcanvas');
+	var clearchat = document.getElementById('clearchat');
+	var selectedColor = $('#color');
 	var context = canvas.getContext("2d");
 	var lastpoint = null;
-	var linecolor = "black";
 	var painting = false;
+	
+	// Disable text selection on the canvas
+	canvas.onmousedown = function () { return false; }
 	
 	socket.on('draw', draw);
 	
 	function draw(line) {
 		context.lineJoin = "round";
-		context.lineWidth = 1;
+		context.lineWidth = 2;
 		context.strokeStyle = line.color;
 		context.beginPath();
 		
@@ -146,7 +136,7 @@ $(document).ready(function() {
 	$("#canvas").mousedown(function(e) {
 		painting = true;
 		var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop};
-		var line = { from: null, to: newpoint, color: linecolor };
+		var line = { from: null, to: newpoint, color: selectedColor.val() };
 		draw(line);
 		lastpoint = newpoint;
 		socket.emit('draw', line);
@@ -155,7 +145,7 @@ $(document).ready(function() {
 	$("#canvas").mousemove(function(e){
 		if(painting) {
 			var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop};
-			var line = { from: lastpoint, to: newpoint, color: linecolor };
+			var line = { from: lastpoint, to: newpoint, color: selectedColor.val() };
 			draw(line);
 			lastpoint = newpoint;
 			socket.emit('draw', line);
@@ -194,55 +184,21 @@ $(document).ready(function() {
 		}
 	});
 	
-	socket.on('clearCanvas', function() {
-		canvas.width = canvas.width;
-	});
+	$('#colors').farbtastic({ callback:'#color', width:150 });
 	
-	clearCanvas.onclick = function()
+	clearcanvas.onclick = function()
 	{
 		socket.emit('clearCanvas');
 	};
 	
-	clearChat.onclick = function()
-	{
-		chatContent.text('');
-		chatInput.val('');
-		document.getElementById("chatInput").focus();
-	};
+	socket.on('clearCanvas', function() {
+		canvas.width = canvas.width;
+	});
 	
-	blackPencil.onclick = function()
+	clearchat.onclick = function()
 	{
-		linecolor = "black";
-		$('#black').css('border-style','inset');
-		$('#red').css('border-style','outset');
-		$('#green').css('border-style','outset');
-		$('#blue').css('border-style','outset');
-	};
-	
-	redPencil.onclick = function()
-	{
-		linecolor = "red";
-		$('#black').css('border-style','outset');
-		$('#red').css('border-style','inset');
-		$('#green').css('border-style','outset');
-		$('#blue').css('border-style','outset');
-	};
-	
-	greenPencil.onclick = function()
-	{
-		linecolor = "green";
-		$('#black').css('border-style','outset');
-		$('#red').css('border-style','outset');
-		$('#green').css('border-style','inset');
-		$('#blue').css('border-style','outset');
-	};
-	
-	bluePencil.onclick = function()
-	{
-		linecolor = "blue";
-		$('#black').css('border-style','outset');
-		$('#red').css('border-style','outset');
-		$('#green').css('border-style','outset');
-		$('#blue').css('border-style','inset');
+		chatcontent.text('');
+		chatinput.val('');
+		document.getElementById("chatinput").focus();
 	};
 });

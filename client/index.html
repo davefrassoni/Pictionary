@@ -4,29 +4,31 @@
 		<meta charset="utf-8">
 		<title>davefrassoni.com</title>
 		<link rel="stylesheet" type="text/css" href="styles/pictonary.css" />
-		<script src="scripts/socket.io.js"></script>
-		<script src="scripts/jquery-1.7.2.min.js"></script>
-		<script src="scripts/pictonary-client.js"></script>
+		<script type="text/javascript" src="scripts/socket.io.js"></script>
+		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="scripts/pictonary-client.js"></script>
+		<script type="text/javascript" src="scripts/farbtastic.js"></script>
 	</head>
 	<body>
 		<div id="main">
 			<div id="status">status: offline</div>
-			<div id="drawing">
-				<canvas id="canvas" width="500" height="500"/>
+			<div id="firstpanel">
+				<div id="people"></div><br />
+				<input type="button" id="clearcanvas" value="Clear Canvas" /><br />
+				<div id="colorpicker">
+					<div id="colors"></div><br />
+					<input type="text" id="color" />
+				</div>
 			</div>
-			<div id="chat">
-				<div id="chatContent"></div>
-				<input type="text" id="chatNick" disabled="disabled" value="guest" maxlength="32" />
-				<input type="text" id="chatInput" disabled="disabled" maxlength="256" />
-				<br/>
-				<input type="button" id="black" />
-				<input type="button" id="red" />
-				<input type="button" id="green" />
-				<input type="button" id="blue" />
-				<input type="button" id="clearCanvas" value="Clear Canvas" />
-				<input type="button" id="clearChat" value="Clear Chat" />
+			<div id="secondpanel">
+				<canvas id="canvas" width="500" height="500"></canvas>
 			</div>
-			<div id="people"></div>
+			<div id="thirdpanel">
+				<div id="chatcontent"></div>
+				<input type="text" id="chatnick" disabled="disabled" value="guest" maxlength="32" />
+				<input type="text" id="chatinput" disabled="disabled" maxlength="256" /><br/>
+				<input type="button" id="clearchat" value="Clear Chat" />
+			</div>
 		</div>
 	</body>
 </html>

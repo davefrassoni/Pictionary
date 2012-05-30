@@ -19,9 +19,9 @@ function handler (req, res) {
 	});
 }
 
-var users = [];
-var canvas = [];
+var users = [], canvas = [];
 
+// User connections
 io.sockets.on('connection', function (socket) {
 	var myNick = 'guest';
 	var myColor = rndColor();
