@@ -1,5 +1,5 @@
 # Pictionary #
-current version: 0.0.3
+current version: 0.0.4
 
 ## Description ##
 
@@ -19,7 +19,7 @@ current version: 0.0.3
 
 1. Browse to:
 
-		http://localhost:8080/index.html
+		http://localhost:8080/
 
 1. Modify code as you want
 

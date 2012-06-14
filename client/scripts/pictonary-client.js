@@ -1,23 +1,23 @@
 $(document).ready(function() {
 	var socket = io.connect('http://localhost:8080/');
 	
-	var status = $("#status");
-	var people = $('#people');
+	var status = $('#status'),
+		people = $('#people'),
+		chatinput = $('#chatinput'),
+		chatnick = $('#chatnick');
 	
-	socket.on('connect', function ()
-	{
+	socket.on('connect', function () {
 		status.text('status: online');
 		chatinput.removeAttr('disabled');
 		chatnick.removeAttr('disabled');
-		document.getElementById("chatinput").focus();
+		chatinput.focus();
 	});
 	
-	socket.on('users', function (users)
-	{
+	socket.on('users', function (users) {
 		people.text('');
 		for(var i in users)
 		{
-			people.append('<p><span style="color:' + users[i].color + '">' + users[i].nick + '</span></p>');
+			people.append('<p>' + users[i].score + ' | <span style="color:' + users[i].color + '">' + users[i].nick + '</span></p>');
 		}
 	});
 	
@@ -25,10 +25,9 @@ $(document).ready(function() {
 	//                                 chat section
 	// ================================================
 	
-	var chatcontent = $("#chatcontent");
-	var chatinput = $('#chatinput');
-	var chatnick = $('#chatnick');
-	var myNick = "guest";
+	var chatcontent = $('#chatcontent'),
+		changenickcolor = $('#changenickcolor'),
+		myNick = 'guest';
 	
 	chatinput.keydown(function(e) {
 		if (e.keyCode === 13) {
@@ -60,7 +59,7 @@ $(document).ready(function() {
 		}
 	});
 	
-	function nickChange()	{
+	function nickChange() {
 		var msg = chatnick.val();
 		if (!msg || msg == myNick) {
 			return;
@@ -72,52 +71,49 @@ $(document).ready(function() {
 	
 	socket.on('message', function(msg) {
 		chatcontent.append('<p><span style="color:' + msg.color + '">' + msg.nick + '</span>: ' + msg.text + '</p>');
-		
 		chatScrollDown();
 	});
 	
-	socket.on('userJoined', function (user)	{
+	socket.on('userJoined', function (user) {
 		chatcontent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> joined.</p>');
-		
 		chatScrollDown();
 	});
 	
-	socket.on('userLeft', function (user)	{
+	socket.on('userLeft', function (user) {
 		chatcontent.append('<p>&raquo; <span style="color:' + user.color + '">' + user.nick + '</span> left.</p>');
-		
 		chatScrollDown();
 	});
 	
 	socket.on('nickChange', function (user) {
 		chatcontent.append('<p><span style="color:' + user.color + '">' + user.oldNick + '</span> changed his nick to <span style="color:' + user.color + '">' + user.newNick + '</span></p>');
-		
 		chatScrollDown();
 	});
 
 	function chatScrollDown() {
-		var objchatcontent = document.getElementById("chatcontent");
-		objchatcontent.scrollTop = objchatcontent.scrollHeight;
+		chatcontent.scrollTop(chatcontent[0].scrollHeight);
 	};
+	
+	changenickcolor.click(function() {
+		socket.emit('changeNickColor');
+	});
 	
 	// ================================================
 	//                           canvas drawing section
 	// ================================================
 	
-	var canvas = document.getElementById('canvas');
-	var clearcanvas = document.getElementById('clearcanvas');
-	var clearchat = document.getElementById('clearchat');
-	var selectedColor = $('#color');
-	var context = canvas.getContext("2d");
-	var lastpoint = null;
-	var painting = false;
-	
-	// Disable text selection on the canvas
-	canvas.onmousedown = function () { return false; }
+	var canvas = $('#canvas'),
+		clearcanvas = $('#clearcanvas'),
+		clearchat = $('#clearchat'),
+		selectedcolor = $('.color'),
+		context = canvas[0].getContext('2d'),
+		lastpoint = null,
+		painting = false,
+		myturn = false;
 	
 	socket.on('draw', draw);
 	
 	function draw(line) {
-		context.lineJoin = "round";
+		context.lineJoin = 'round';
 		context.lineWidth = 2;
 		context.strokeStyle = line.color;
 		context.beginPath();
@@ -133,39 +129,47 @@ $(document).ready(function() {
 		context.stroke();
 	}
 	
-	$("#canvas").mousedown(function(e) {
-		painting = true;
-		var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop};
-		var line = { from: null, to: newpoint, color: selectedColor.val() };
-		draw(line);
-		lastpoint = newpoint;
-		socket.emit('draw', line);
+	// Disable text selection on the canvas
+	canvas.mousedown(function () {
+		return false;
 	});
 	
-	$("#canvas").mousemove(function(e){
-		if(painting) {
-			var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop};
-			var line = { from: lastpoint, to: newpoint, color: selectedColor.val() };
+	canvas.mousedown(function(e) {
+		if(myturn) {
+			painting = true;
+			var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop},
+				line = { from: null, to: newpoint, color: selectedcolor.val() };
+			
 			draw(line);
 			lastpoint = newpoint;
 			socket.emit('draw', line);
 		}
 	});
 	
-	$("#canvas").mouseout(function(e){
+	canvas.mousemove(function(e) {
+		if(myturn && painting) {
+			var newpoint = { x: e.pageX - this.offsetLeft, y: e.pageY - this.offsetTop},
+				line = { from: lastpoint, to: newpoint, color: selectedcolor.val() };
+			
+			draw(line);
+			lastpoint = newpoint;
+			socket.emit('draw', line);
+		}
+	});
+	
+	canvas.mouseout(function(e) {
 		painting = false;
 	});
 	
-	$("#canvas").mouseup(function(e){
+	canvas.mouseup(function(e) {
 		painting = false;
 	});
 	
-	socket.on('drawCanvas', function(canvasToDraw)
-	{
+	socket.on('drawCanvas', function(canvasToDraw) {
 		if(canvasToDraw) {
-			canvas.width = canvas.width;
-			context.lineJoin = "round";
-			context.lineWidth = 1;
+			canvas.width(canvas.width());
+			context.lineJoin = 'round';
+			context.lineWidth = 2;
 			
 			for(var i=0; i < canvasToDraw.length; i++)
 			{		
@@ -184,21 +188,57 @@ $(document).ready(function() {
 		}
 	});
 	
-	$('#colors').farbtastic({ callback:'#color', width:150 });
-	
-	clearcanvas.onclick = function()
-	{
-		socket.emit('clearCanvas');
-	};
-	
-	socket.on('clearCanvas', function() {
-		canvas.width = canvas.width;
+	clearcanvas.click(function() {
+		if(myturn) {
+			socket.emit('clearCanvas');
+		}
 	});
 	
-	clearchat.onclick = function()
-	{
+	socket.on('clearCanvas', function() {
+		context.clearRect ( 0 , 0 , canvas.width() , canvas.height() );
+	});
+	
+	clearchat.click(function() {
 		chatcontent.text('');
 		chatinput.val('');
-		document.getElementById("chatinput").focus();
-	};
+		chatinput.focus();
+	});
+	
+	// ================================================
+	//                           pictionary logic section
+	// ================================================
+	
+	var readytodraw = $('#readytodraw'),
+		myword = '';
+	
+	readytodraw.click(function() {
+		socket.emit('readyToDraw');
+	});
+	
+	socket.on('youDraw', function(word) {
+		myturn = true;
+		canvas.css('background-color', '#fff');
+		myword = word;
+		status.text('Your word is: ' + myword[0] + ' (difficulty: ' + myword[1] + ')');
+	});
+	
+	socket.on('firendDraw', function(msg) {
+		chatcontent.append('<p>&raquo; <span style="color:' + msg.color + '">' + msg.nick + '</span> is drawing!</p>');
+		chatScrollDown();
+	});
+	
+	socket.on('youCanDraw', function(msg) {
+		if(myturn) {
+			myturn = false;
+			canvas.css('background-color', '#ccc');
+			status.text('status: online');
+		}
+		chatcontent.append('<p>Click <strong>Ready to draw!</strong> button to draw.</p>');
+		chatScrollDown();
+	});
+	
+	socket.on('wordGuessed', function(msg) {
+		chatcontent.append('<p>&raquo; <span style="color:' + msg.color + '">' + msg.nick + '</span> guessed the word (<strong>' + msg.text + '</strong>) !!!</p>');
+		chatScrollDown();
+	});
 });

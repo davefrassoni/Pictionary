@@ -7,18 +7,15 @@
 		<script type="text/javascript" src="scripts/socket.io.js"></script>
 		<script type="text/javascript" src="scripts/jquery-1.7.2.min.js"></script>
 		<script type="text/javascript" src="scripts/pictonary-client.js"></script>
-		<script type="text/javascript" src="scripts/farbtastic.js"></script>
+		<script type="text/javascript" src="scripts/jscolor/jscolor.js"></script>
 	</head>
 	<body>
 		<div id="main">
 			<div id="status">status: offline</div>
 			<div id="firstpanel">
 				<div id="people"></div><br />
-				<input type="button" id="clearcanvas" value="Clear Canvas" /><br />
-				<div id="colorpicker">
-					<div id="colors"></div><br />
-					<input type="text" id="color" />
-				</div>
+				<input type="button" id="clearcanvas" value="Clear canvas" /><br />
+				<input class="color {hash:true}" value="000000">
 			</div>
 			<div id="secondpanel">
 				<canvas id="canvas" width="500" height="500"></canvas>
@@ -27,7 +24,9 @@
 				<div id="chatcontent"></div>
 				<input type="text" id="chatnick" disabled="disabled" value="guest" maxlength="32" />
 				<input type="text" id="chatinput" disabled="disabled" maxlength="256" /><br/>
-				<input type="button" id="clearchat" value="Clear Chat" />
+				<input type="button" id="clearchat" value="Clear chat" />
+				<input type="button" id="changenickcolor" value="Change nick color" />
+				<input type="button" id="readytodraw" value="Ready to draw!" />
 			</div>
 		</div>
 	</body>
