@@ -1,6 +1,6 @@
 {
 	"name": "Pictionary",
-	"version": "0.0.4",
+	"version": "0.1.0",
 	"description": "Enjoyable Pictionary game working with Node.js and Socket.io",
 	"keywords": ["pictionary", "draw", "drawing", "game", "socket.io", "nodejs", "node.js"],
 	"author": "Dave Frassoni <me@davefrassoni.com> (http://davefrassoni.com/)",
