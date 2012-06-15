@@ -230,6 +230,7 @@ $(document).ready(function() {
 	
 	socket.on('firendDraw', function(msg) {
 		chatcontent.append('<p>&raquo; <span style="color:' + msg.color + '">' + msg.nick + '</span> is drawing!</p>');
+		status.text('status: online | ' + msg.nick + ' is drawing right now!');
 		chatScrollDown();
 	});
 	

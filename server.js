@@ -13,8 +13,8 @@ console.log('>>> Pictionary started at port 8080 >>>');
 function handler (req, res) {
 	var reqFile = req.url;
 	
-	if (reqFile == "/") {
-		reqFile = "/index.html";
+	if (reqFile == '/') {
+		reqFile = '/index.html';
 	}
 	
 	fs.readFile(__dirname + '/client' + reqFile,
@@ -26,20 +26,20 @@ function handler (req, res) {
 			
 			var filetype = reqFile.substring(reqFile.lastIndexOf('.'), reqFile.length);
 			switch(filetype) {
-				case ".html":
-					res.setHeader("Content-Type", "text/html");
+				case '.html':
+					res.setHeader('Content-Type', 'text/html');
 					break;
-				case ".js":
-					res.setHeader("Content-Type", "application/javascript");
+				case '.js':
+					res.setHeader('Content-Type', 'application/javascript');
 					break;
-				case ".css":
-					res.setHeader("Content-Type", "text/css");
+				case '.css':
+					res.setHeader('Content-Type', 'text/css');
 					break;
-				case ".gif":
-					res.setHeader("Content-Type", "image/gif");
+				case '.gif':
+					res.setHeader('Content-Type', 'image/gif');
 					break;
-				case ".png":
-					res.setHeader("Content-Type", "image/png");
+				case '.png':
+					res.setHeader('Content-Type', 'image/png');
 					break;
 			}
 			
@@ -58,7 +58,7 @@ var dictionary, currentWord, currentPlayer, drawingTimer;
 
 // load dictionary.txt into memory
 fs.readFile(__dirname + '/dictionary.txt', function (err, data) {
-	dictionary = data.toString('utf-8').split("\r\n");
+	dictionary = data.toString('utf-8').split('\r\n');
 });
 
 io.sockets.on('connection', function (socket) {
@@ -70,6 +70,10 @@ io.sockets.on('connection', function (socket) {
 	io.sockets.emit('userJoined', { nick: myNick, color: myColor });
 	io.sockets.emit('users', users);
 	socket.emit('drawCanvas', canvas);
+	
+	if(currentPlayer)
+		socket.emit('firendDraw', { color: '#000', nick: currentPlayer });
+	}
 	
 	// =============
 	// chat logic section
@@ -201,7 +205,7 @@ io.sockets.on('connection', function (socket) {
 			
 			var randomLine = Math.floor(Math.random() * dictionary.length),
 				line = dictionary[randomLine],
-				word = line.split(",");
+				word = line.split(',');
 			
 			currentWord = word[0];
 			socket.emit('youDraw', word);
