@@ -207,8 +207,8 @@ io.sockets.on('connection', function (socket) {
 			socket.emit('youDraw', word);
 			io.sockets.emit('firendDraw', { color: myColor, nick: myNick });
 			
-			// set the timer for 1 minute (60000ms)
-			drawingTimer = setTimeout( turnFinished, 60000 );
+			// set the timer for 2 minutes (120000ms)
+			drawingTimer = setTimeout( turnFinished, 120000 );
 		} else if (currentPlayer == socket.id) {
 			// turn off drawing timer
 			clearTimeout(drawingTimer);

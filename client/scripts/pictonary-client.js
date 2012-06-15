@@ -210,7 +210,7 @@ $(document).ready(function() {
 	
 	var readytodraw = $('#readytodraw'),
 		myword = '',
-		timeleft = 60,
+		timeleft = 120,
 		drawingTimer = null;
 	
 	readytodraw.click(function() {
@@ -247,7 +247,7 @@ $(document).ready(function() {
 		chatcontent.append('<p>&raquo; <span style="color:' + msg.color + '">' + msg.nick + '</span> guessed the word (<strong>' + msg.text + '</strong>) !!!</p>');
 		chatScrollDown();
 		if(myturn = true) {
-			timeleft = 60
+			timeleft = 120;
 			clearInterval(drawingTimer);
 			drawingTimer = null;
 			readytodraw.prop('value', 'Ready to draw!');
@@ -258,7 +258,7 @@ $(document).ready(function() {
 		chatcontent.append('<p>&raquo; The turn is over! The word was <strong>' + msg.text + '</strong>.</p>');
 		chatScrollDown();
 		if(myturn = true) {
-			timeleft = 60
+			timeleft = 120;
 			clearInterval(drawingTimer);
 			drawingTimer = null;
 			readytodraw.prop('value', 'Ready to draw!');
@@ -270,7 +270,7 @@ $(document).ready(function() {
 			timeleft--;
 			readytodraw.prop('value', 'Pass (' + timeleft + ')');
 		} else {
-			timeleft = 60
+			timeleft = 120;
 			clearInterval(drawingTimer);
 			drawingTimer = null;
 			readytodraw.prop('value', 'Ready to draw!');
