@@ -54,7 +54,7 @@ function handler (req, res) {
 // ================================================
 
 var users = [], canvas = [];
-var dictionary, currentWord, currentPlayer;
+var dictionary, currentWord, currentPlayer, drawingTimer;
 
 // load dictionary.txt into memory
 fs.readFile(__dirname + '/dictionary.txt', function (err, data) {
@@ -88,18 +88,26 @@ io.sockets.on('connection', function (socket) {
 		
 		// check if current word was guessed
 		if(currentPlayer != null && currentPlayer != socket.id) {
-			if(sanitizedMsg == currentWord) {
-				io.sockets.emit('wordGuessed', { text: sanitizedMsg, color: myColor, nick: myNick });
+			if(sanitizedMsg.toLowerCase().trim() == currentWord) {
+				io.sockets.emit('wordGuessed', { text: currentWord, color: myColor, nick: myNick });
 				
+				// add scores to guesser and drawer
 				for(var i = 0; i<users.length; i++) {
 					if(users[i].id == socket.id || users[i].id == currentPlayer) {
 						users[i].score = users[i].score + 10;
 					}
 				}
 				
-				currentPlayer = null;
+				// comunicate new scores
 				sortUsersByScore();
 				io.sockets.emit('users', users);
+				
+				// turn off drawing timer
+				clearTimeout(drawingTimer);
+				drawingTimer = null;
+				
+				// allow new user to draw
+				currentPlayer = null;
 				io.sockets.emit('youCanDraw');
 			}
 		}
@@ -114,7 +122,7 @@ io.sockets.on('connection', function (socket) {
 			return;
 		}
 		
-		io.sockets.emit('nickChange', { newNick:sanitizedNick, oldNick: myNick, color: myColor });
+		io.sockets.emit('nickChange', { newNick: sanitizedNick, oldNick: myNick, color: myColor });
 		myNick = sanitizedNick;
 		
 		for(var i = 0; i<users.length; i++) {
@@ -139,8 +147,9 @@ io.sockets.on('connection', function (socket) {
 		io.sockets.emit('users', users);
 		
 		if(currentPlayer == socket.id) {
-			currentPlayer = null;
-			io.sockets.emit('youCanDraw');
+			// turn off drawing timer
+			clearTimeout(drawingTimer);
+			turnFinished();
 		}
 	});
 	
@@ -197,6 +206,39 @@ io.sockets.on('connection', function (socket) {
 			currentWord = word[0];
 			socket.emit('youDraw', word);
 			io.sockets.emit('firendDraw', { color: myColor, nick: myNick });
+			
+			// set the timer for 1 minute (60000ms)
+			drawingTimer = setTimeout( turnFinished, 60000 );
+		} else if (currentPlayer == socket.id) {
+			// turn off drawing timer
+			clearTimeout(drawingTimer);
+			turnFinished();
 		}
 	});
+	
+	socket.on('pass', function () {
+		if (!currentPlayer) {
+			currentPlayer = socket.id;
+			canvas.splice(0, canvas.length);
+			io.sockets.emit('clearCanvas');
+			
+			var randomLine = Math.floor(Math.random() * dictionary.length),
+				line = dictionary[randomLine],
+				word = line.split(",");
+			
+			currentWord = word[0];
+			socket.emit('youDraw', word);
+			io.sockets.emit('firendDraw', { color: myColor, nick: myNick });
+			
+			// set the timer for 1 minute (60000ms)
+			drawingTimer = setTimeout( turnFinished, 60000 );
+		}
+	});
+	
+	function turnFinished() {
+		drawingTimer = null;
+		currentPlayer = null;
+		io.sockets.emit('wordNotGuessed', { text: currentWord });
+		io.sockets.emit('youCanDraw');
+	}
 });

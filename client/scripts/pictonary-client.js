@@ -8,8 +8,8 @@ $(document).ready(function() {
 	
 	socket.on('connect', function () {
 		status.text('status: online');
-		chatinput.removeAttr('disabled');
-		chatnick.removeAttr('disabled');
+		chatinput.removeProp('disabled');
+		chatnick.removeProp('disabled');
 		chatinput.focus();
 	});
 	
@@ -209,7 +209,9 @@ $(document).ready(function() {
 	// ================================================
 	
 	var readytodraw = $('#readytodraw'),
-		myword = '';
+		myword = '',
+		timeleft = 60,
+		drawingTimer = null;
 	
 	readytodraw.click(function() {
 		socket.emit('readyToDraw');
@@ -220,6 +222,10 @@ $(document).ready(function() {
 		canvas.css('background-color', '#fff');
 		myword = word;
 		status.text('Your word is: ' + myword[0] + ' (difficulty: ' + myword[1] + ')');
+		readytodraw.prop('value', 'Pass (' + timeleft + ')');
+		
+		// turn on drawing timer
+		drawingTimer = setInterval( timerTick, 1000 );
 	});
 	
 	socket.on('firendDraw', function(msg) {
@@ -240,5 +246,34 @@ $(document).ready(function() {
 	socket.on('wordGuessed', function(msg) {
 		chatcontent.append('<p>&raquo; <span style="color:' + msg.color + '">' + msg.nick + '</span> guessed the word (<strong>' + msg.text + '</strong>) !!!</p>');
 		chatScrollDown();
+		if(myturn = true) {
+			timeleft = 60
+			clearInterval(drawingTimer);
+			drawingTimer = null;
+			readytodraw.prop('value', 'Ready to draw!');
+		}
 	});
+	
+	socket.on('wordNotGuessed', function(msg) {
+		chatcontent.append('<p>&raquo; The turn is over! The word was <strong>' + msg.text + '</strong>.</p>');
+		chatScrollDown();
+		if(myturn = true) {
+			timeleft = 60
+			clearInterval(drawingTimer);
+			drawingTimer = null;
+			readytodraw.prop('value', 'Ready to draw!');
+		}
+	});
+	
+	function timerTick() {
+		if(timeleft > 0) {
+			timeleft--;
+			readytodraw.prop('value', 'Pass (' + timeleft + ')');
+		} else {
+			timeleft = 60
+			clearInterval(drawingTimer);
+			drawingTimer = null;
+			readytodraw.prop('value', 'Ready to draw!');
+		}
+	}
 });
