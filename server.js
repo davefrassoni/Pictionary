@@ -71,8 +71,14 @@ io.sockets.on('connection', function (socket) {
 	io.sockets.emit('users', users);
 	socket.emit('drawCanvas', canvas);
 	
+	// notify if someone is drawing
 	if(currentPlayer) {
-		socket.emit('firendDraw', { color: '#000', nick: currentPlayer });
+		for(var i = 0; i<users.length; i++) {
+			if(users[i].id == currentPlayer) {
+				socket.emit('firendDraw', { color: users[i].color, nick: users[i].nick });
+				break;
+			}
+		}
 	}
 	
 	// =============
