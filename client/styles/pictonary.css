@@ -20,7 +20,9 @@ body
 #status
 {
 	padding:5px;
+	margin-bottom:15px;
 	color:#fff;
+	font-size:15px;
 }
 
 ::-webkit-scrollbar {
