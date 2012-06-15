@@ -216,25 +216,6 @@ io.sockets.on('connection', function (socket) {
 		}
 	});
 	
-	socket.on('pass', function () {
-		if (!currentPlayer) {
-			currentPlayer = socket.id;
-			canvas.splice(0, canvas.length);
-			io.sockets.emit('clearCanvas');
-			
-			var randomLine = Math.floor(Math.random() * dictionary.length),
-				line = dictionary[randomLine],
-				word = line.split(",");
-			
-			currentWord = word[0];
-			socket.emit('youDraw', word);
-			io.sockets.emit('firendDraw', { color: myColor, nick: myNick });
-			
-			// set the timer for 1 minute (60000ms)
-			drawingTimer = setTimeout( turnFinished, 60000 );
-		}
-	});
-	
 	function turnFinished() {
 		drawingTimer = null;
 		currentPlayer = null;
