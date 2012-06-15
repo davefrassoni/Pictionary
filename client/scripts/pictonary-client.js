@@ -7,7 +7,7 @@ $(document).ready(function() {
 		chatnick = $('#chatnick');
 	
 	socket.on('connect', function () {
-		status.text('status: online');
+		status.text('status: online | Click Ready to draw! button to start drawing');
 		chatinput.removeProp('disabled');
 		chatnick.removeProp('disabled');
 		chatinput.focus();
@@ -221,7 +221,7 @@ $(document).ready(function() {
 		myturn = true;
 		canvas.css('background-color', '#fff');
 		myword = word;
-		status.text('Your word is: ' + myword[0] + ' (difficulty: ' + myword[1] + ')');
+		status.text('status: online | Your word is: ' + myword[0] + ' (difficulty: ' + myword[1] + ')');
 		readytodraw.prop('value', 'Pass (' + timeleft + ')');
 		
 		// turn on drawing timer
@@ -237,7 +237,7 @@ $(document).ready(function() {
 		if(myturn) {
 			myturn = false;
 			canvas.css('background-color', '#ccc');
-			status.text('status: online');
+			status.text('status: online | Click Ready to draw! button to start drawing');
 		}
 		chatcontent.append('<p>Click <strong>Ready to draw!</strong> button to draw.</p>');
 		chatScrollDown();
