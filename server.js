@@ -71,7 +71,7 @@ io.sockets.on('connection', function (socket) {
 	io.sockets.emit('users', users);
 	socket.emit('drawCanvas', canvas);
 	
-	if(currentPlayer)
+	if(currentPlayer) {
 		socket.emit('firendDraw', { color: '#000', nick: currentPlayer });
 	}
 	
