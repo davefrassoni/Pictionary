@@ -3,8 +3,9 @@ var io = require('socket.io').listen(app, { log: false });
 var fs = require('fs');
 var sanitizer = require('sanitizer');
 
-app.listen(8080);
-console.log('>>> Pictionary started at port 8080 >>>');
+var port = process.env.port || 8080;
+app.listen(port);
+console.log('>>> Pictionary started at port ' + port + ' >>>');
 
 // ================================================
 //                           server routing section

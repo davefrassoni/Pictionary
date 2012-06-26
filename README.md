@@ -1,5 +1,5 @@
 # Pictionary #
-current version: 0.1.1
+current version: 0.1.2
 
 ## Description ##
 
@@ -21,6 +21,6 @@ current version: 0.1.1
 
 		http://localhost:8080/
 
-1. Modify code as you want
-
 1. Enjoy the Pictionary!
+
+1. Modify code as you want
