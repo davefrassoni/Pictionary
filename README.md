@@ -1,3 +1,4 @@
+[![build status](https://secure.travis-ci.org/davefrassoni/Pictionary.png)](http://travis-ci.org/davefrassoni/Pictionary)
 # Pictionary #
 current version: 0.1.2
 
