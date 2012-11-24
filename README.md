@@ -24,3 +24,9 @@ current version: 0.1.2
 1. Enjoy the Pictionary!
 
 1. Modify code as you want
+
+## Sample ##
+
+Find an online sample at http://pictionary.davefrassoni.com/.
+
+Thanks to my JS mentor, Angel J Lopez (https://github.com/ajlopez) for his canvas sample and all the support!
