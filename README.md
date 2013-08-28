@@ -30,3 +30,6 @@ current version: 0.1.2
 Find an online sample at http://pictionary.davefrassoni.com/.
 
 Thanks to my JS mentor, Angel J Lopez (https://github.com/ajlopez) for his canvas sample and all the support!
+
+[![NPM](https://nodei.co/npm/Pictionary.png?downloads=true&stars=true)](https://nodei.co/npm/Pictionary/)
+[![NPM](https://nodei.co/npm-dl/Pictionary.png)](https://nodei.co/npm/Pictionary/)
